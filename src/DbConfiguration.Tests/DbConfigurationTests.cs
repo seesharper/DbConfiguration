@@ -13,8 +13,9 @@ public class DbConfigurationTests
     [Fact]
     public void ShouldConfigureConnection()
     {
-        DbConfigurationOptions.ConfigureInnerConnectionAccessor<InstrumentedDbConnection, SQLiteConnection>((instrumentedDbConnection)
+        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SQLiteConnection>((instrumentedDbConnection)
             => instrumentedDbConnection.InnerDbConnection as SQLiteConnection);
+
 
         var connection = GetInstrumentedConnection();
         connection.Configure<SQLiteConnection>(connection => connection.Should().BeOfType<SQLiteConnection>());
