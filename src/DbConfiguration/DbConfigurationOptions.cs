@@ -68,6 +68,6 @@ public class DbConfigurationOptions
         {
             return reader;
         }
-        throw new InvalidOperationException("Something useful here");
+        throw new InvalidOperationException($"Unable to resolve {typeof(TDbTransaction)} from {dbTransaction.GetType()}. Use 'DbConfigurationOptions.ConfigureTransactionAccessor<{dbTransaction.GetType().Name}, {typeof(TDbTransaction).Name}>() to setup how to access {typeof(TDbTransaction).Name}'");
     }
 }

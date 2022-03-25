@@ -95,8 +95,34 @@ public class DbConfigurationTests
         var command = GetInstrumentedConnection().CreateCommand();
         command.CommandText = "SELECT 1";
         var reader = command.ExecuteReader();
-        Action action = () => reader.ConfigureDataReader<SQLiteDataReader>(command => {});
+        Action action = () => reader.ConfigureDataReader<SQLiteDataReader>(command => { });
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureDataReaderAccessor"));
+    }
+
+    [Fact]
+    public void ShouldConfigureTransaction()
+    {
+        DbConfigurationOptions.Clear();
+        var transaction = GetSQLiteConnection().BeginTransaction();
+        transaction.ConfigureDbTransaction<SQLiteTransaction>(command => command.Should().BeOfType<SQLiteTransaction>());
+    }
+
+    [Fact]
+    public void ShouldConfigureTransactionWithTransactionAccessor()
+    {
+        DbConfigurationOptions.Clear();
+        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SQLiteTransaction>(transaction => (SQLiteTransaction)transaction.InnerDbTransaction);
+        var transaction = GetInstrumentedConnection().BeginTransaction();
+        transaction.ConfigureDbTransaction<SQLiteTransaction>(command => command.Should().BeOfType<SQLiteTransaction>());
+    }
+
+    [Fact]
+    public void ShouldThrowExceptionWhenTransactionAccessorIsMissing()
+    {
+        DbConfigurationOptions.Clear();
+        var transaction = GetInstrumentedConnection().BeginTransaction();
+        Action action = () => transaction.ConfigureDbTransaction<SQLiteTransaction>(command => { });
+        action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureTransactionAccessor"));
     }
 
     private static IDbConnection GetInstrumentedConnection(InstrumentationOptions options = null)
