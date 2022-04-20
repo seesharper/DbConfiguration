@@ -18,7 +18,7 @@ namespace DbConfiguration
         /// <returns>This <paramref name="dbConnection"/> for chaining calls</returns>
         public static IDbConnection Configure<TConnection>(this IDbConnection dbConnection, Action<TConnection> configureConnection) where TConnection : IDbConnection
         {
-            configureConnection(DbConfigurationOptions.GetInnerConnection<TConnection>(dbConnection));
+            configureConnection(dbConnection.GetInner<TConnection>());
             return dbConnection;
         }
 
@@ -31,7 +31,7 @@ namespace DbConfiguration
         /// <returns>This <paramref name="dbCommand"/> for chaining calls</returns>
         public static IDbCommand Configure<TCommand>(this IDbCommand dbCommand, Action<TCommand> configureCommand) where TCommand : IDbCommand
         {
-            configureCommand(DbConfigurationOptions.GetInnerCommand<TCommand>(dbCommand));
+            configureCommand(dbCommand.GetInner<TCommand>());
             return dbCommand;
         }
 
@@ -44,7 +44,7 @@ namespace DbConfiguration
         /// <returns>This <paramref name="dataReader"/> for chaining calls</returns>
         public static IDataReader Configure<TDataReader>(this IDataReader dataReader, Action<TDataReader> configureDataReader) where TDataReader : IDataReader
         {
-            configureDataReader(DbConfigurationOptions.GetInnerDataReader<TDataReader>(dataReader));
+            configureDataReader(dataReader.GetInner<TDataReader>());
             return dataReader;
         }
 
