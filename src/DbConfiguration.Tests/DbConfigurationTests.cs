@@ -125,6 +125,44 @@ public class DbConfigurationTests
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureTransactionAccessor"));
     }
 
+    [Fact]
+    public void ShouldGetInnerConnection()
+    {
+        DbConfigurationOptions.Clear();
+        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SQLiteConnection>(connection => (SQLiteConnection)connection.InnerDbConnection);
+        var connection = GetInstrumentedConnection();
+        connection.GetInner<SQLiteConnection>().Should().BeOfType<SQLiteConnection>();
+    }
+
+    [Fact]
+    public void ShouldGetInnerTransaction()
+    {
+        DbConfigurationOptions.Clear();
+        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SQLiteTransaction>(transaction => (SQLiteTransaction)transaction.InnerDbTransaction);
+        using var transaction = GetInstrumentedConnection().BeginTransaction();
+        transaction.GetInner<SQLiteTransaction>().Should().BeOfType<SQLiteTransaction>();
+    }
+
+    [Fact]
+    public void ShouldGetInnerCommand()
+    {
+        DbConfigurationOptions.Clear();
+        DbConfigurationOptions.ConfigureCommandAccessor<InstrumentedDbCommand, SQLiteCommand>(command => (SQLiteCommand)command.InnerDbCommand);
+        var command = GetInstrumentedConnection().CreateCommand();
+        command.GetInner<SQLiteCommand>().Should().BeOfType<SQLiteCommand>();
+    }
+
+    [Fact]
+    public void ShouldGetInnerDataReader()
+    {
+        DbConfigurationOptions.Clear();
+        DbConfigurationOptions.ConfigureDataReaderAccessor<InstrumentedDbDataReader, SQLiteDataReader>(reader => (SQLiteDataReader)reader.InnerDbDataReader);
+        var command = GetInstrumentedConnection().CreateCommand();
+        command.CommandText = "SELECT 1";
+        var reader = command.ExecuteReader();
+        reader.GetInner<SQLiteDataReader>().Should().BeOfType<SQLiteDataReader>();
+    }
+
     private static IDbConnection GetInstrumentedConnection(InstrumentationOptions options = null)
     {
         return new InstrumentedDbConnection(GetSQLiteConnection(), options ?? new InstrumentationOptions("sqlite"));
