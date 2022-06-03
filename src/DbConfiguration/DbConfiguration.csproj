@@ -4,7 +4,7 @@
     <Authors>Bernhard Richter</Authors>
     <Description>A simple helper library to access provider-specific types when working with IDbConnection and friends.</Description>
     <Copyright>Bernhard Richter</Copyright>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/seesharper/DbConfiguration</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

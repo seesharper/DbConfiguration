@@ -9,7 +9,7 @@
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.5" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
