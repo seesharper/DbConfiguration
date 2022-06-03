@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using DbActivities;
 using FluentAssertions;
 using Xunit;
@@ -15,18 +15,18 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var connection = GetSQLiteConnection();
-        connection.Configure<SQLiteConnection>(connection => connection.Should().BeOfType<SQLiteConnection>());
+        connection.Configure<SqliteConnection>(connection => connection.Should().BeOfType<SqliteConnection>());
     }
 
     [Fact]
     public void ShouldConfigureConnectionWithConnectionAccessor()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SQLiteConnection>((instrumentedDbConnection)
-            => instrumentedDbConnection.InnerDbConnection as SQLiteConnection);
+        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SqliteConnection>((instrumentedDbConnection)
+            => instrumentedDbConnection.InnerDbConnection as SqliteConnection);
 
         var connection = GetInstrumentedConnection();
-        connection.Configure<SQLiteConnection>(connection => connection.Should().BeOfType<SQLiteConnection>());
+        connection.Configure<SqliteConnection>(connection => connection.Should().BeOfType<SqliteConnection>());
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var connection = GetInstrumentedConnection();
-        Action action = () => connection.Configure<SQLiteConnection>(connection => { });
+        Action action = () => connection.Configure<SqliteConnection>(connection => { });
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureConnectionAccessor"));
     }
 
@@ -43,18 +43,18 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var command = GetSQLiteConnection().CreateCommand();
-        command.Configure<SQLiteCommand>(command => command.Should().BeOfType<SQLiteCommand>());
+        command.Configure<SqliteCommand>(command => command.Should().BeOfType<SqliteCommand>());
     }
 
     [Fact]
     public void ShouldConfigureCommandWithCommandAccessor()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureCommandAccessor<InstrumentedDbCommand, SQLiteCommand>(
-            command => (SQLiteCommand)command.InnerDbCommand);
+        DbConfigurationOptions.ConfigureCommandAccessor<InstrumentedDbCommand, SqliteCommand>(
+            command => (SqliteCommand)command.InnerDbCommand);
 
         var command = GetInstrumentedConnection().CreateCommand();
-        command.Configure<SQLiteCommand>(command => command.Should().BeOfType<SQLiteCommand>());
+        command.Configure<SqliteCommand>(command => command.Should().BeOfType<SqliteCommand>());
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var command = GetInstrumentedConnection().CreateCommand();
-        Action action = () => command.Configure<SQLiteCommand>(command => { });
+        Action action = () => command.Configure<SqliteCommand>(command => { });
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureCommandAccessor"));
     }
 
@@ -73,19 +73,19 @@ public class DbConfigurationTests
         var command = GetSQLiteConnection().CreateCommand();
         command.CommandText = "SELECT 1";
         var reader = command.ExecuteReader();
-        reader.Configure<SQLiteDataReader>(command => command.Should().BeOfType<SQLiteDataReader>());
+        reader.Configure<SqliteDataReader>(command => command.Should().BeOfType<SqliteDataReader>());
     }
 
     [Fact]
     public void ShouldConfigureDataReaderWithDataReaderAccessor()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureDataReaderAccessor<InstrumentedDbDataReader, SQLiteDataReader>(
-            reader => (SQLiteDataReader)reader.InnerDbDataReader);
+        DbConfigurationOptions.ConfigureDataReaderAccessor<InstrumentedDbDataReader, SqliteDataReader>(
+            reader => (SqliteDataReader)reader.InnerDbDataReader);
         var command = GetInstrumentedConnection().CreateCommand();
         command.CommandText = "SELECT 1";
         var reader = command.ExecuteReader();
-        reader.Configure<SQLiteDataReader>(command => command.Should().BeOfType<SQLiteDataReader>());
+        reader.Configure<SqliteDataReader>(command => command.Should().BeOfType<SqliteDataReader>());
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class DbConfigurationTests
         var command = GetInstrumentedConnection().CreateCommand();
         command.CommandText = "SELECT 1";
         var reader = command.ExecuteReader();
-        Action action = () => reader.Configure<SQLiteDataReader>(command => { });
+        Action action = () => reader.Configure<SqliteDataReader>(command => { });
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureDataReaderAccessor"));
     }
 
@@ -104,16 +104,16 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var transaction = GetSQLiteConnection().BeginTransaction();
-        transaction.Configure<SQLiteTransaction>(command => command.Should().BeOfType<SQLiteTransaction>());
+        transaction.Configure<SqliteTransaction>(command => command.Should().BeOfType<SqliteTransaction>());
     }
 
     [Fact]
     public void ShouldConfigureTransactionWithTransactionAccessor()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SQLiteTransaction>(transaction => (SQLiteTransaction)transaction.InnerDbTransaction);
+        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SqliteTransaction>(transaction => (SqliteTransaction)transaction.InnerDbTransaction);
         var transaction = GetInstrumentedConnection().BeginTransaction();
-        transaction.Configure<SQLiteTransaction>(command => command.Should().BeOfType<SQLiteTransaction>());
+        transaction.Configure<SqliteTransaction>(command => command.Should().BeOfType<SqliteTransaction>());
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class DbConfigurationTests
     {
         DbConfigurationOptions.Clear();
         var transaction = GetInstrumentedConnection().BeginTransaction();
-        Action action = () => transaction.Configure<SQLiteTransaction>(command => { });
+        Action action = () => transaction.Configure<SqliteTransaction>(command => { });
         action.Should().Throw<InvalidOperationException>().Where(e => e.Message.Contains("ConfigureTransactionAccessor"));
     }
 
@@ -129,38 +129,38 @@ public class DbConfigurationTests
     public void ShouldGetInnerConnection()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SQLiteConnection>(connection => (SQLiteConnection)connection.InnerDbConnection);
+        DbConfigurationOptions.ConfigureConnectionAccessor<InstrumentedDbConnection, SqliteConnection>(connection => (SqliteConnection)connection.InnerDbConnection);
         var connection = GetInstrumentedConnection();
-        connection.GetInner<SQLiteConnection>().Should().BeOfType<SQLiteConnection>();
+        connection.GetInner<SqliteConnection>().Should().BeOfType<SqliteConnection>();
     }
 
     [Fact]
     public void ShouldGetInnerTransaction()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SQLiteTransaction>(transaction => (SQLiteTransaction)transaction.InnerDbTransaction);
+        DbConfigurationOptions.ConfigureTransactionAccessor<InstrumentedDbTransaction, SqliteTransaction>(transaction => (SqliteTransaction)transaction.InnerDbTransaction);
         using var transaction = GetInstrumentedConnection().BeginTransaction();
-        transaction.GetInner<SQLiteTransaction>().Should().BeOfType<SQLiteTransaction>();
+        transaction.GetInner<SqliteTransaction>().Should().BeOfType<SqliteTransaction>();
     }
 
     [Fact]
     public void ShouldGetInnerCommand()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureCommandAccessor<InstrumentedDbCommand, SQLiteCommand>(command => (SQLiteCommand)command.InnerDbCommand);
+        DbConfigurationOptions.ConfigureCommandAccessor<InstrumentedDbCommand, SqliteCommand>(command => (SqliteCommand)command.InnerDbCommand);
         var command = GetInstrumentedConnection().CreateCommand();
-        command.GetInner<SQLiteCommand>().Should().BeOfType<SQLiteCommand>();
+        command.GetInner<SqliteCommand>().Should().BeOfType<SqliteCommand>();
     }
 
     [Fact]
     public void ShouldGetInnerDataReader()
     {
         DbConfigurationOptions.Clear();
-        DbConfigurationOptions.ConfigureDataReaderAccessor<InstrumentedDbDataReader, SQLiteDataReader>(reader => (SQLiteDataReader)reader.InnerDbDataReader);
+        DbConfigurationOptions.ConfigureDataReaderAccessor<InstrumentedDbDataReader, SqliteDataReader>(reader => (SqliteDataReader)reader.InnerDbDataReader);
         var command = GetInstrumentedConnection().CreateCommand();
         command.CommandText = "SELECT 1";
         var reader = command.ExecuteReader();
-        reader.GetInner<SQLiteDataReader>().Should().BeOfType<SQLiteDataReader>();
+        reader.GetInner<SqliteDataReader>().Should().BeOfType<SqliteDataReader>();
     }
 
     private static IDbConnection GetInstrumentedConnection(InstrumentationOptions options = null)
@@ -170,7 +170,7 @@ public class DbConfigurationTests
 
     private static DbConnection GetSQLiteConnection()
     {
-        var connection = new SQLiteConnection("Data Source= :memory:; Cache = Shared");
+        var connection = new SqliteConnection("Data Source= :memory:; Cache = Shared");
         connection.Open();
         return connection;
     }
